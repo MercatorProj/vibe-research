@@ -1,36 +1,46 @@
-name: Sync Gitee Repo
+name: Sync from Gitee (Pro)
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # 每6小时同步一次（可改）
-  workflow_dispatch:        # 支持手动触发
+    - cron: '0 */6 * * *'   # 每6小时
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 拉取当前 GitHub 仓库
+      # 1️⃣ 检出当前 GitHub 仓库
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      # 2. 克隆 Gitee 仓库（指定 master 分支）
-      - name: Clone from Gitee
+      # 2️⃣ 拉取 Gitee 仓库（临时目录 repo）
+      - name: Clone Gitee repo
         run: |
-          git clone --depth=1 --branch master https://gitee.com/Mercator/vibe-research.git source
+          git clone --depth=1 --branch master https://gitee.com/Mercator/vibe-research.git repo
 
-      # 3. 同步文件（完全镜像）
+      # 3️⃣ 删除 git 元数据（避免污染）
+      - name: Remove git metadata
+        run: |
+          rm -rf repo/.git
+
+      # 4️⃣ 同步文件（核心步骤）
       - name: Sync files
         run: |
           rsync -av --delete \
-            --filter "protect .*/" \
             --exclude ".git" \
             --exclude ".github" \
-            source/ ./
-            
-      # 4. 提交并推送到 GitHub
+            --exclude ".*/" \
+            repo/ ./
+
+      # 5️⃣ 清理临时目录（避免残留）
+      - name: Cleanup
+        run: |
+          rm -rf repo
+
+      # 6️⃣ 提交并推送
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
