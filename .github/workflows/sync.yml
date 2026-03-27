@@ -24,10 +24,12 @@ jobs:
       # 3. 同步文件（完全镜像）
       - name: Sync files
         run: |
-          rsync -av --delete source/ ./ \
+          rsync -av --delete \
+            --filter "protect .*/" \
             --exclude ".git" \
-            --exclude ".github"
-
+            --exclude ".github" \
+            source/ ./
+            
       # 4. 提交并推送到 GitHub
       - name: Commit & Push
         run: |
