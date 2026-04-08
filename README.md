@@ -1,150 +1,202 @@
-# Vibe Research 学术技能包
+# thesis skills
 
-一个面向学术研究与论文写作的工作流技能库。通过标准化的技能（Skills）与项目文档（agents.md），让 AI Agent 能够像靠谱的师兄师姐一样，帮你推进论文写作、文献处理、格式规范等任务。
+> *把流程交给技能，把学术判断留给你。*
 
-**适用工具**：本仓库设计为在本地或远程工作区中由各类 **Agent / 编程助手** 读取与调用，包括但不限于 **OpenCode**、**Cursor**、**Claude Code**、**Trae**、**OpenClaw** 等；技能目录在磁盘上可能呈现为 `.opencode/skills/`、`.cursor/skills/` 等路径，**以你所用工具与本机配置为准**。
-
-许可与对外分发见 [DISTRIBUTION.md](DISTRIBUTION.md)。技能触发场景、路由规则与项目约定见 [agents.md](agents.md)。
+面向学位论文、期刊投稿与系统综述的 Agent Skills 集合。每个技能都是 `skills/<技能名>/SKILL.md`，供 OpenCode、Cursor、Claude Code、Trae 等环境中的 AI 读取后执行。
 
 ---
 
-## 核心理念
+## 先看这个：`agents.md`
 
-**「Vibe Research」** = 别先啃完整个仓库，像聊天一样告诉 Agent 你卡在哪里、有什么材料、想要什么结果；Agent 会按任务读取对应的 `SKILL.md` 执行。
+`skills/` 提供通用能力；`agents.md` 决定你的项目如何落地（路径、初始化信息、路由、长期偏好）。
 
----
+- 你可以手动维护 `agents.md`。
+- 也可以让 AI 先生成草案，你确认后再写入。
+- 没有 `agents.md` 时，Agent 只能给通用建议；有它后才能稳定复用项目上下文。
 
-## 主要内容
-
-### Skills（技能）
-
-每个子文件夹对应一个标准化工作流，Agent 会根据任务自动选取。下表为速查；**触发场景与「同一任务只选一个」等规则以 [agents.md](agents.md) 为准。**
-
-| 技能 | 功能 |
-|------|------|
-| **literature** | 文献检索、阅读综述、插入引用、BibTeX 生成 |
-| **academic-writing** | 学术写作润色、人味化改写（去 AI 痕迹） |
-| **latex-compile** | XeLaTeX 编译学位论文 PDF |
-| **formula-normalizer** | 数学公式规范化、符号一致性检查 |
-| **chapter-structure-refactor** | 章节结构整体重构与逻辑梳理 |
-| **thesis-reviewer** | 学位论文评审、语义审查、AI 风格检查 |
-| **image-description** | 论文插图学术描述撰写 |
-| **svg-flowchart** | 学术风格流程图生成 |
-| **pdf** | PDF 文本提取、表格提取、表单填充 |
-| **docx** | Word 文档创建、编辑、修订 Accept |
-| **systematic-review-lite** | 轻量系统综述与 PRISMA 筛选流程 |
-| **mcp-builder** | MCP Server 开发指南与评估 |
-| **skill-creator** | 创建新技能的工具与模板 |
-
-**Skills** 是通用菜谱：**agents.md** 是你家厨房的调料柜位置——记录题目、章节习惯、路径约定与技能路由，随项目推进由你与 Agent 共同维护。
-
-### agents.md
-
-项目专属的配置文件，记录你的论文题目、章节习惯、路径约定、技能路由等。不必先通读；需要时打开，或让 Agent 按你的确认更新。
+一句话：`skills` 是能力库，`agents.md` 是项目控制面板。
 
 ---
 
-## 快速开始
+## 快速开始（3 步）
 
-1. **打开本仓库**（或与你的论文项目放在同一工作区，让 Agent 能读到 `skills`）。
-2. **直接开口**：说明你是谁、写什么、当前这一步需要什么；有材料就贴正文、给路径或上传文件。
-3. **可选**：加一句「请按本仓库 **skills** 执行，需要时先问我再更新 **agents.md**」；或让 Agent 选对流程后自己去读 `SKILL.md`，长期约定写入 `agents.md` 前先征得你同意。
+### 1) 获取仓库
 
-技能目录在你电脑上可能是 `.opencode/skills/` 或 `.cursor/skills/`，以本机为准。
-
-### 示例开场白
-
-```
-我在写硕士论文，题目是《……》。使用 LaTeX，实验用 PyTorch。
-不知道从哪一章开始写比较顺，请帮我排个写作顺序，并说明每节大概内容。
+```bash
+git clone <你的仓库 URL> thesis-skills
 ```
 
-更完整的多场景开场白与多轮接话见下文「教程：第一句话与多轮对话」。
+也可作为论文项目的 `git submodule` 使用，便于版本固定与更新。
+
+### 2) 让 Agent 能读到 `SKILL.md`
+
+- 通用：仓库在工作区内，路径为 `skills/<技能名>/SKILL.md`。
+- Cursor：将 `skills/` 复制到 `.cursor/skills/`，或将 `.cursor/skills` 做 junction 指向本仓库 `skills/`。
+- OpenCode 等：如约定 `.opencode/skills/`，用复制或符号链接映射。
+
+### 3) 接上驾驶舱
+
+把 [agents.md](agents.md) 放到你的论文项目根目录，填写占位符与初始化状态。首次协作建议按第 0 节先问一轮。
 
 ---
 
-## 教程：第一句话与多轮对话
+## 用户场景：怎么开口
 
-别从路由表开始。除上例外，可在段尾加一句「万能尾巴」（任选或改写）：
-
-- 「请根据本仓库的 **skills** 选对流程，自己去读对应的 `SKILL.md`；如果对我这个项目有长期适用的约定，**先问我一句**，再帮我补进 **agents.md**。」
-- 简短版：「请按本仓库 skills 执行；需要记录项目习惯时，提议更新 agents.md。」
-
-若你已知道技能名，也可以直说：「请按 **literature** 技能做。」
-
-**三句完整开场示例（改题目和格式即可）：**
+### 场景 1：刚起步，不知道先写哪章
 
 ```text
-我在写硕士论文，题目暂定《高校快递驿站出库流量峰值预测及其与周边奶茶店排队长度的时空耦合分析——基于 PyTorch 的实证研究》。
-LaTeX，章节都在「论文章节」里；实验部分打算用 PyTorch。
-不知道从哪一章动笔比较顺，你帮我排个顺序，顺便说说每一节大概写什么。
+我在写硕士论文，当前只有零散笔记和几篇核心文献。
+请先给我“先写什么、后写什么”的顺序，并给每章 3-5 个写作要点。
+若需要长期约定，请先问我再写入 agents.md。
 ```
+
+### 场景 2：文献综述只要“述”不要“展望”
 
 ```text
-我要投一篇中文期刊的综述，题目是《电动汽车低温工况续航里程争议的话语建构与传播机制：知识演化与主题共现的文献述评》。
-正文用 Markdown 写。你先给我一版章节大纲，再给每节几个检索关键词（最好中英文都有），我去下文献。
+我要写相关研究，只做“问题—方法—证据”的综述，不要末章展望。
+请选一个技能并先读取 SKILL.md，再把下面内容改成可直接进正文的综述段落。
 ```
+
+### 场景 3：提交前质量自查
 
 ```text
-期末有一篇读书报告，题目《1859 年以降澳大利亚穴兔扩散与有袋类生态位竞争的历时性考察——兼论引入物种治理政策的文献综述》，按老师说的课程报告来就行。
-帮我列个提纲、5～8 个检索词，再说说适合引专著还是论文还是报告之类。
+我准备提交当前稿件。请按“结构-证据-术语-格式”做一轮质量自查，
+给我“问题类型 + 修改优先级 + 可直接替换句子/操作建议”。
 ```
 
-同一篇东西很少一轮搞定。每一轮照旧：**要做什么、动哪一段/哪个文件、字数或格式有没有要求**。
+### 场景 4：只改局部，不动整章
 
-### 路线 A：学位论文 + 实验
-
-| 轮次 | 你可以怎么说 |
-|------|----------------|
-| 开场 | 用上面论文示例整段；需要就加「万能尾巴」维护 agents.md。 |
-| 第 2 轮 | 「agents.md 按你的草案我改好了。请帮我在**绪论**里写一段与 PyTorch 实验相关的**方法预见**，约 400 字，LaTeX 片段，可放在 `论文章节` 里某个 `.tex`。」 |
-| 第 3 轮 | 「上一段保留，请把**公式和符号**改成学位论文常用写法，并标建议插入的 `\label`/章节位置。」 |
-| 第 4 轮 | 「请按 literature **插入引用**模式，在该段末加 2 篇支撑文献，给出带 `\cite{}` 的句子；`.bib` 路径按我 agents.md 里的约定。」 |
-
-### 路线 B：期刊综述（接续「电动汽车」那种开场）
-
-| 轮次 | 你可以怎么说 |
-|------|----------------|
-| 开场 | 用综述示例整段。 |
-| 第 2 轮 | 「我按你给的检索词下载了几篇 PDF，路径在 `refs/综述_01.pdf` 等，请按 literature **阅读模式**分别做短笔记，并标注与综述大纲各节的对应关系。」 |
-| 第 3 轮 | 「请把笔记合并成**第二节（传播机制与话语框架）**的 Markdown 正文，约 1500 字，**全程期刊综述腔**，不要吐槽题目。」 |
-| 第 4 轮 | 「请按期刊常见要求给一个**参考文献列表草稿**（可先作者-年份体例），并标出哪些条目需要我补 DOI。」 |
-
-### 路线 C：课程读书报告
-
-| 轮次 | 你可以怎么说 |
-|------|----------------|
-| 开场 | 用读书报告示例整段。 |
-| 第 2 轮 | 「提纲我满意。请按提纲写**正文第一部分**（引入背景与问题界定），800 字左右，**课程论文书面语**，可少量引用。」 |
-| 第 3 轮 | 「全文合成一版，总字数压到 2500 以内，并加一段**参考文献**（5 条即可，课程作业级别）。」 |
-
-### 单轮也能用：开口即任务
-
-不打算拉长对话时，直接一句需求 + 材料即可，例如：
-
-- 「把下面这段 LaTeX **润色**成学术中文，并检查术语是否统一。」（下面粘贴正文）
-- 「我的主文件在 `论文章节/Thesis.tex`，请按 latex-compile 给我 **Windows PowerShell** 下编译 PDF 的命令。」
-
----
-
-## 文件结构
-
-```
-├── .opencode/skills/          # 技能目录（本机也可能是 .cursor/skills/）
-│   ├── literature/            # 文献技能
-│   ├── academic-writing/      # 学术写作
-│   ├── latex-compile/         # LaTeX 编译
-│   ├── ...                    # 其他技能
-├── agents.md                  # 项目配置（你的用车手册）
-├── DISTRIBUTION.md            # 分发许可说明
-└── README.md                  # 本文件
+```text
+不要改整章，只改这一段（粘贴）。目标：压到 320 字，
+保留结论和数据，不改变原意，输出可直接粘贴版本。
 ```
 
 ---
 
-## 相关文档
+## 多轮对话模板（推荐）
 
-- [agents.md](agents.md) — 技能路由表与项目约定（详表以该文件为准）
-- [DISTRIBUTION.md](DISTRIBUTION.md) — 许可与分发说明
+多轮通常比一次性大请求更稳定：
 
-**Vibe Research** 的用法：**先说话、后补细节**；仓库替你存流程，你只管说清楚「这一步要什么」。
+1. 第一轮只说清“这一步要什么”；
+2. 第二轮只推进一个子目标；
+3. 第三轮做术语/字数/引用/格式精修。
+
+### 第一句话模板
+
+```text
+我在写【论文类型】，当前卡在【章节/任务】。
+材料在【路径或粘贴正文】，目标是【字数/风格/格式】。
+请先选一个技能并读取 SKILL.md 再执行；需要长期约定请先问我再写入 agents.md。
+```
+
+### 路线 A：学位论文（3 轮）
+
+- 第 1 轮：先给章节顺序与每节目标。
+- 第 2 轮：只写某一小节，给字数与保留项。
+- 第 3 轮：不改观点，做压缩与一致性检查。
+
+### 路线 B：期刊综述（4 轮）
+
+- 第 1 轮：先给综述框架（只述不展望）。
+- 第 2 轮：把文献摘要归到各小节。
+- 第 3 轮：先写单节正文。
+- 第 4 轮：补引用位并标待补 DOI。
+
+### 路线 C：课程报告（3 轮）
+
+- 第 1 轮：按老师模板列提纲。
+- 第 2 轮：只写“分析”部分。
+- 第 3 轮：统一语体并给摘要。
+
+实用原则：每轮尽量只包含 **一个目标 + 一段材料 + 一个约束**。
+
+---
+
+## 技能索引（速查）
+
+详细触发条件与组合路径以 [agents.md](agents.md) 为准。
+
+### 文献与综述
+
+- `literature`：检索、笔记、引用、BibTeX、去重
+- `literature-summary-zh`：科学性综述（只述不展望）
+- `sci-journal-literature`：SCI/顶会导向检索
+- `systematic-review-lite`：轻量 PRISMA 流程
+
+### 写作与结构
+
+- `academic-writing`：润色、人味化、术语统一
+- `thesis-abstract-zh`：摘要专项
+- `thesis-conclusion-outlook-zh`：末章结论与展望
+- `chapter-structure-refactor`：整章重构
+
+### 评审与一致性
+
+- `thesis-reviewer`：盲审向评审、摘要专项、AI 痕迹
+- `intro-reviewer`：绪论专审与方法-文献支撑
+
+### 格式、图表与演示
+
+- `latex-compile`：XeLaTeX 编译 PDF
+- `formula-normalizer`：公式符号一致性
+- `svg-flowchart`：学术流程图
+- `image-description`：图注与正文描述
+- `academic-presentation`：答辩/汇报幻灯片
+- `pdf`：技能内约定的 PDF 操作（非通用通读）
+- `docx`：技能内约定的 Word 操作（非通用解析）
+
+### 扩展
+
+- `skill-creator`：新建技能模板
+- `mcp-builder`：MCP 开发说明
+
+---
+
+## 设计边界与学术诚信
+
+- 本仓库用于辅助写作流程，不替代原创研究与学术判断。
+- 不建议把输出不经实质性修改直接提交。
+- 不代劳：创新点决断、实验/调查方案设计、代写可提交全文。
+- 不提供：以本仓库为入口的 doc/pdf/html 通用通读与批量解析管线。
+- `pdf`/`docx` 目录仅覆盖各自 `SKILL.md` 标注场景。
+
+---
+
+## 运行环境（需自备）
+
+- LaTeX：MiKTeX / TeX Live / MacTeX
+- Word：Microsoft Word / WPS（依学校要求）
+- 格式转换：[Pandoc](https://pandoc.org/)
+- 脚本：Python 3 + 各技能 `requirements.txt`
+
+本仓库不负责本机 TeX/Pandoc 环境排障。
+
+---
+
+## 仓库结构
+
+```text
+skills/
+  <skill-name>/
+    SKILL.md
+    references/
+    scripts/
+agents.md
+README.md
+.cursor/   # 可选
+.opencode/ # 可选
+```
+
+---
+
+## English
+
+**thesis skills** is a skill pack for thesis writing, literature workflows, and review-oriented drafting. Each workflow lives in `skills/<name>/SKILL.md`; agents should read it before acting.
+
+- `skills/` gives generic capabilities.
+- `agents.md` is project-specific control (paths, initialization, routing, long-term preferences).
+- One task, one skill; iterate in short multi-turn loops.
+
+---
+
+更多细则与路由： [agents.md](agents.md)
